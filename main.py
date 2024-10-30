@@ -6,7 +6,7 @@ inference_script = "manga-colorization-v2-custom/inference_v2.py"
 image_path = r"D:\Download\Tu_Lieu\Cao_Hoc\Ky_3\Multimedia\FinalExam\manga_read_along\magi_functional\data_test\personal_data\Ruri_Dragon\raw"
 denoiser_sigma = 0
 use_gpu = True
-save_path = "./test_output"
+save_path = "./test_output_coloring"
 # generator_path = r"D:\Download\Tu_Lieu\Cao_Hoc\Ky_3\Multimedia\FinalExam\manga_read_along\manga-colorization-v2-custom\networks\generator.zip"
 # denoiser_path = r"D:\Download\Tu_Lieu\Cao_Hoc\Ky_3\Multimedia\FinalExam\manga_read_along\manga-colorization-v2-custom\denoising\models\net_rgb.pth"
 
