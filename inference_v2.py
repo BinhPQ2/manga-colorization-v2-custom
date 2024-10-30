@@ -7,14 +7,20 @@ from PIL import Image
 import torch  # Import PyTorch to check for GPU availability
 
 def process_image(image, colorizator, size, denoiser, denoiser_sigma):
+    original_image = image.copy()
     colorizator.set_image(image, size, denoiser, denoiser_sigma)
-    return colorizator.colorize()
+    colorization = colorizator.colorize(image_to_get_ratio = original_image)
+    return colorization
 
 def colorize_single_image(image_path, save_path, colorizator, size, denoiser, denoiser_sigma):
+    # Create the directory if it doesn't exist
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
     image = plt.imread(image_path)
     colorization = process_image(image, colorizator, size, denoiser, denoiser_sigma)
     colorization = (colorization * 255).astype(np.uint8)
     Image.fromarray(colorization).convert('RGB').save(save_path, format='JPEG')
+    print(f"Saved colorized image to: {save_path}")  # Print save path
     return True
 
 def colorize_images(target_path, colorizator, path, size, denoiser, denoiser_sigma):
@@ -62,9 +68,18 @@ def main():
         
     elif os.path.isfile(args.path):
         image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff']
-        image_name, image_ext = os.path.splitext(args.path)
+        directory_path = os.path.dirname(args.path)
+        image_name_with_ext = os.path.basename(args.path)
+        image_name, image_ext = os.path.splitext(image_name_with_ext)
         if image_ext.lower() in image_extensions:
-            new_image_path = f"{image_name}_colorized.jpg" if not args.save_path else os.path.join(args.save_path, f"{image_name}_colorized.jpg")
+            template_name = image_name + "_colorized.jpg"
+
+            # If a save path is provided, use it; otherwise, use the default naming
+            if args.save_path:
+                new_image_path = os.path.join(args.save_path, template_name)
+            else:
+                new_image_path = os.path.join(directory_path, template_name)
+
             colorize_single_image(args.path, new_image_path, colorizer, args.size, args.denoiser, args.denoiser_sigma)
         else:
             print('Wrong image format')

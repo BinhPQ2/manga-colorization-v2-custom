@@ -42,3 +42,29 @@ def resize_pad(img, size = 256):
         np.clip(img, 0, 1, out = img)
 
     return img[:, :, :1], pad
+
+def resize_image(image, size):
+    """Resize the image to the given size."""
+    from PIL import Image
+
+    # Convert the numpy array back to a PIL Image
+    img = Image.fromarray((image * 255).astype(np.uint8))
+    img_resized = img.resize(size, Image.ANTIALIAS)  # Resize with anti-aliasing
+    return np.array(img_resized) / 255  # Return as a normalized numpy array
+
+def undo_padding(img, pad):
+    """
+    Remove padding from the image.
+
+    Args:
+        img: numpy.ndarray, the padded image.
+        pad: tuple, padding amounts (pad_height, pad_width) added to the image.
+
+    Returns:
+        numpy.ndarray: The image without padding.
+    """
+    if pad is not None:
+        pad_height, pad_width = pad
+        # Remove padding from the bottom and the right
+        img = img[:img.shape[0] - pad_height, :img.shape[1] - pad_width]
+    return img
