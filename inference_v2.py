@@ -38,10 +38,11 @@ def parse_args():
     parser.add_argument("-p", "--path", required=True, help="Path to the image or directory")
     parser.add_argument("-gen", "--generator", default='networks/generator.zip', help="Path to the generator model")
     parser.add_argument("-des_path", "--denoiser_path", default='denoising/models/', help="Path to the denoiser model")
+    parser.add_argument("-s", "--save_path", default=None, help="Custom path to save colorized images")
     parser.add_argument('-g', '--gpu', dest='gpu', action='store_true', help="Force usage of GPU")
     parser.add_argument('-nd', '--no_denoise', dest='denoiser', action='store_false', help="Disable denoising")
     parser.add_argument("-ds", "--denoiser_sigma", type=int, default=25, help="Denoiser sigma value")
-    parser.add_argument("-s", "--size", type=int, default=576, help="Size for the colorization process")
+    parser.add_argument("-sz", "--size", type=int, default=576, help="Size for the colorization process")
     parser.set_defaults(gpu=False, denoiser=True)
     return parser.parse_args()
 
@@ -54,7 +55,8 @@ def main():
     colorizer = create_colorizer(device, args.generator, args.denoiser_path)
     
     if os.path.isdir(args.path):
-        colorization_path = os.path.join(args.path, 'colorization')
+        # Create a "colorization" folder in the specified path if no custom save path is provided
+        colorization_path = args.save_path if args.save_path else os.path.join(args.path, 'colorization')
         os.makedirs(colorization_path, exist_ok=True)
         colorize_images(colorization_path, colorizer, args.path, args.size, args.denoiser, args.denoiser_sigma)
         
@@ -62,7 +64,7 @@ def main():
         image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff']
         image_name, image_ext = os.path.splitext(args.path)
         if image_ext.lower() in image_extensions:
-            new_image_path = f"{image_name}_colorized.jpg"
+            new_image_path = f"{image_name}_colorized.jpg" if not args.save_path else os.path.join(args.save_path, f"{image_name}_colorized.jpg")
             colorize_single_image(args.path, new_image_path, colorizer, args.size, args.denoiser, args.denoiser_sigma)
         else:
             print('Wrong image format')
