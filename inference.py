@@ -70,8 +70,7 @@ if __name__ == "__main__":
     
     if os.path.isdir(args.path):
         colorization_path = os.path.join(args.path, 'colorization')
-        if not os.path.exists(colorization_path):
-            os.makedirs(colorization_path)
+        os.makedirs(colorization_path, exist_ok=True)
               
         colorize_images(colorization_path, colorizer, args)
         
@@ -84,7 +83,7 @@ if __name__ == "__main__":
             
             colorize_single_image(args.path, new_image_path, colorizer, args)
         else:
-            print('Wrong format')
+            print('Wrong image format')
     else:
-        print('Wrong path')
+        print('Wrong path format')
     
