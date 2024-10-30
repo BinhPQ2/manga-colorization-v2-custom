@@ -45,7 +45,6 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--path", required=True)
     parser.add_argument("-gen", "--generator", default = 'networks/generator.zip')
-    parser.add_argument("-ext", "--extractor", default = 'networks/extractor.pth')
     parser.add_argument('-g', '--gpu', dest = 'gpu', action = 'store_true')
     parser.add_argument('-nd', '--no_denoise', dest = 'denoiser', action = 'store_false')
     parser.add_argument("-ds", "--denoiser_sigma", type = int, default = 25)
